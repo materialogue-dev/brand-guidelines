@@ -133,6 +133,7 @@ td code { font-size: 12px; }
   <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('general', this)">General Guide</button>
     <button class="tab-btn" onclick="switchTab('simpolo', this)">Simpolo Example</button>
+    <button class="tab-btn" onclick="switchTab('upload', this)">Image Upload</button>
   </div>
 
   <nav id="nav-general">
@@ -161,6 +162,14 @@ td code { font-size: 12px; }
     <div class="nav-group">Reference</div>
     <a href="#specs-by-category">Specs by Category</a>
     <a href="#image-guidelines">Image Guidelines</a>
+  </nav>
+
+  <nav id="nav-upload" style="display:none">
+    <div class="nav-group">Image Upload</div>
+    <a href="#upload-overview">Overview</a>
+    <a href="#upload-process">How It Works</a>
+    <a href="#upload-specs">Image Specs</a>
+    <a href="#upload-contact">Submit Your Images</a>
   </nav>
 
   <nav id="nav-simpolo" style="display:none">
@@ -612,7 +621,7 @@ td code { font-size: 12px; }
 
 <section id="image-guidelines">
   <h2>Image Guidelines</h2>
-  <p>All images must be uploaded to DigitalOcean Spaces before being referenced in the API.</p>
+  <p>Images referenced in the API must be publicly accessible URLs. They can be hosted anywhere — on your own CDN, your website, or uploaded to Materialogue's DigitalOcean Spaces (see the <strong>Image Upload</strong> tab for details).</p>
   <table>
     <thead><tr><th>Image type</th><th>Recommended size</th><th>Format</th><th>Notes</th></tr></thead>
     <tbody>
@@ -623,7 +632,7 @@ td code { font-size: 12px; }
     </tbody>
   </table>
   <h4>CDN URL format</h4>
-  <p style="margin:8px 0 6px;color:#aaa;font-size:0.92em;">All images must be hosted on Materialogue's DigitalOcean Spaces and served via the CDN. The URL follows this general structure:</p>
+  <p style="margin:8px 0 6px;color:#aaa;font-size:0.92em;">If your images are hosted on Materialogue's DigitalOcean Spaces, the CDN URL follows this structure:</p>
   <pre>https://materialogue.blr1.cdn.digitaloceanspaces.com/[folder-path]/[filename]</pre>
   <p style="margin:10px 0 6px;color:#aaa;font-size:0.92em;"><strong style="color:#ccc;">Where:</strong><br>
   <code>[folder-path]</code> — the folder within the bucket for your brand (provided by Materialogue)<br>
@@ -903,6 +912,77 @@ brands/[brand-name]/products/[sku-code].jpg        → Product image</pre>
 
 </div><!-- end tab-simpolo -->
 
+
+<!-- ======================================================= -->
+<!-- TAB: IMAGE UPLOAD                                        -->
+<!-- ======================================================= -->
+<div id="tab-upload" style="display:none">
+
+<section id="upload-overview">
+  <h1>Image Upload</h1>
+  <div class="intro-card">
+    <p>You don't need your own hosting to add images to your brand profile or products. Simply share your image files with the Materialogue team and you'll receive a CDN-ready URL to use directly in the API.</p>
+    <p style="margin-top:10px;">All images hosted on Materialogue's DigitalOcean Spaces are served via a global CDN for fast load times across India and beyond.</p>
+  </div>
+</section>
+
+<section id="upload-process">
+  <h2>How It Works</h2>
+  <ol style="padding-left:20px;line-height:2.2;color:#b0b4bc;font-size:14px;">
+    <li>Prepare your image files following the specs below.</li>
+    <li>Send the files to the Materialogue team via email or WhatsApp (see <a href="#upload-contact" style="color:var(--accent)">Submit Your Images</a>).</li>
+    <li>Include a label for each file so we know where it belongs — e.g. <em>"Kohler logo"</em>, <em>"Alchimia Graphite 600×600 main view"</em>.</li>
+    <li>We upload the files to your brand folder on DigitalOcean Spaces and send you back the CDN URLs.</li>
+    <li>Use those URLs in your API calls — in the <code>logo_url</code>, <code>hero_images</code>, <code>collections[].cover_image</code>, or <code>images</code> fields.</li>
+  </ol>
+  <div class="highlight-box" style="margin-top:16px;">
+    <strong>Example — what you send:</strong>
+    <p style="margin-top:6px;"><code>kohler-logo.svg</code> → label: "Brand logo"<br>
+    <code>purist-basin-front.jpg</code> → label: "Purist Basin, SKU KH-1234, front view"<br>
+    <code>purist-basin-angle.jpg</code> → label: "Purist Basin, SKU KH-1234, angle view"</p>
+  </div>
+  <div class="highlight-box" style="margin-top:12px;">
+    <strong>Example — what you receive back:</strong>
+    <pre style="margin:8px 0 0;">https://materialogue.blr1.cdn.digitaloceanspaces.com/brands/kohler/logo.svg
+https://materialogue.blr1.cdn.digitaloceanspaces.com/brands/kohler/products/purist-basin-front.jpg
+https://materialogue.blr1.cdn.digitaloceanspaces.com/brands/kohler/products/purist-basin-angle.jpg</pre>
+  </div>
+</section>
+
+<section id="upload-specs">
+  <h2>Image Specs</h2>
+  <table>
+    <thead><tr><th>Image type</th><th>Recommended size</th><th>Format</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Brand logo</td><td>Any (vector preferred)</td><td>SVG or PNG (transparent bg)</td><td>Used in headers and brand listings.</td></tr>
+      <tr><td>Brand hero banner</td><td>Min 1400 × 600px</td><td>JPG or WebP</td><td>Landscape. Full-width banner on brand page.</td></tr>
+      <tr><td>Collection cover</td><td>600 × 600px or 600 × 800px</td><td>JPG or WebP</td><td>Square or portrait. Used as collection tile.</td></tr>
+      <tr><td>Product image</td><td>Min 800 × 800px</td><td>JPG, PNG, or WebP</td><td>Square recommended. White or neutral background for primary image.</td></tr>
+    </tbody>
+  </table>
+  <div class="info-box">
+    <p><strong>Tip:</strong> You can send multiple images at once. Batch them by product or by type and label each clearly. There's no limit on how many you can send per request.</p>
+  </div>
+</section>
+
+<section id="upload-contact">
+  <h2>Submit Your Images</h2>
+  <p>Send your images to the Materialogue team via either of the following:</p>
+  <table>
+    <thead><tr><th>Channel</th><th>Details</th></tr></thead>
+    <tbody>
+      <tr><td>Email</td><td><a href="mailto:hello@materialogue.in" style="color:var(--accent)">hello@materialogue.in</a></td></tr>
+      <tr><td>WhatsApp</td><td>Share via your dedicated brand partner contact</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:4px;color:#888;font-size:13px;">Please allow up to 1 business day for URLs to be returned. Urgent uploads can be flagged in your message.</p>
+  <div class="info-box" style="margin-top:20px;">
+    <p>Once you have your CDN URLs, use them directly in the API. The <strong>General Guide</strong> tab explains exactly which fields accept image URLs for brand profiles, collections, and products.</p>
+  </div>
+</section>
+
+</div><!-- end tab-upload -->
+
 </main>
 </div>
 
@@ -910,8 +990,10 @@ brands/[brand-name]/products/[sku-code].jpg        → Product image</pre>
 function switchTab(tab, btn) {
   document.getElementById('tab-general').style.display = tab === 'general' ? '' : 'none';
   document.getElementById('tab-simpolo').style.display = tab === 'simpolo' ? '' : 'none';
+  document.getElementById('tab-upload').style.display = tab === 'upload' ? '' : 'none';
   document.getElementById('nav-general').style.display = tab === 'general' ? '' : 'none';
   document.getElementById('nav-simpolo').style.display = tab === 'simpolo' ? '' : 'none';
+  document.getElementById('nav-upload').style.display = tab === 'upload' ? '' : 'none';
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
