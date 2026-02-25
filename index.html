@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Partner Guide — Materialogue</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --accent: #c8e64c;
+  --accent-dark: #a8c23a;
+  --sidebar-bg: #1a1d23;
+  --sidebar-text: #b0b4bc;
+  --sidebar-active: #ffffff;
+  --bg: #f8f9fa;
+  --card-bg: #ffffff;
+  --text: #24262b;
+  --text-secondary: #5a5e66;
+  --border: #e2e5ea;
+  --code-bg: #f1f3f5;
+  --required: #e53e3e;
+  --optional: #38a169;
+}
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--text); background: var(--bg); line-height: 1.6; }
+.layout { display: flex; min-height: 100vh; }
+.sidebar { width: 280px; background: var(--sidebar-bg); color: var(--sidebar-text); position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; z-index: 100; }
+.sidebar-header { padding: 20px 20px 0; }
+.sidebar-header h1 { color: var(--accent); font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+.sidebar-header p { color: var(--sidebar-text); font-size: 12px; margin-top: 4px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.tab-bar { display: flex; margin: 0; padding: 12px 12px 0; gap: 6px; }
+.tab-btn { flex: 1; padding: 8px 4px; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; background: rgba(255,255,255,0.06); color: var(--sidebar-text); }
+.tab-btn.active { background: var(--accent); color: #1a1d23; }
+.sidebar nav { padding: 8px 0 12px; }
+.sidebar nav a { display: block; padding: 8px 20px; color: var(--sidebar-text); text-decoration: none; font-size: 13px; transition: all 0.2s; border-left: 3px solid transparent; }
+.sidebar nav a:hover { color: var(--sidebar-active); background: rgba(255,255,255,0.04); }
+.sidebar nav a.active { color: var(--accent); border-left-color: var(--accent); background: rgba(200,230,76,0.06); }
+.sidebar nav .nav-group { padding: 14px 20px 6px; font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,0.3); font-weight: 600; }
+.content { margin-left: 280px; flex: 1; padding: 40px 48px; max-width: 980px; }
+.menu-toggle { display: none; position: fixed; top: 12px; left: 12px; z-index: 200; background: var(--sidebar-bg); color: var(--accent); border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 20px; }
+section { margin-bottom: 56px; scroll-margin-top: 20px; }
+h2 { font-size: 28px; font-weight: 700; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--accent); color: var(--text); }
+h3 { font-size: 20px; font-weight: 600; margin: 28px 0 12px; color: var(--text); }
+h4 { font-size: 15px; font-weight: 600; margin: 20px 0 8px; color: var(--text); }
+p { margin-bottom: 12px; color: var(--text-secondary); }
+.card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 20px; }
+.intro-card { background: var(--sidebar-bg); color: #e6e8eb; border-radius: 10px; padding: 28px 32px; margin-bottom: 32px; }
+.intro-card h2 { color: var(--accent); border-color: rgba(200,230,76,0.3); }
+.intro-card p { color: #b0b4bc; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; }
+.badge-required { background: #fed7d7; color: var(--required); }
+.badge-optional { background: #c6f6d5; color: var(--optional); }
+.badge-type { background: var(--code-bg); color: #4a5568; font-family: monospace; }
+code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: 'SF Mono', Monaco, monospace; color: #c7254e; }
+pre { background: var(--sidebar-bg); color: #e6e8eb; padding: 20px 24px; border-radius: 8px; overflow-x: auto; margin: 12px 0 20px; font-size: 13px; line-height: 1.6; }
+pre .key { color: #79b8ff; }
+pre .str { color: #9ecbff; }
+pre .num { color: #f8c555; }
+pre .comment { color: #6a737d; font-style: italic; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 24px; font-size: 13.5px; }
+th { background: var(--sidebar-bg); color: #e6e8eb; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:hover td { background: rgba(200,230,76,0.03); }
+td code { font-size: 12px; }
+.cat-tree { margin: 0; padding: 0; }
+.cat-level1 { margin-bottom: 20px; }
+.cat-level1-name { font-size: 15px; font-weight: 700; padding: 10px 14px; background: var(--sidebar-bg); color: var(--accent); border-radius: 8px 8px 0 0; }
+.cat-level2 { padding: 12px 14px; border: 1px solid var(--border); border-top: none; background: var(--card-bg); }
+.cat-level2-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; margin-top: 10px; }
+.cat-level2-name:first-child { margin-top: 0; }
+.cat-level3 { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; margin-left: 12px; margin-bottom: 8px; }
+.cat-tag { background: var(--code-bg); border: 1px solid var(--border); padding: 2px 10px; border-radius: 20px; font-size: 12px; color: var(--text-secondary); }
+.spec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin: 16px 0; }
+.spec-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+.spec-card h4 { margin-top: 0; color: var(--text); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.spec-field { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; font-size: 13px; }
+.spec-field code { font-size: 12px; }
+.highlight-box { background: #fffbeb; border: 1px solid #f6e05e; border-radius: 8px; padding: 16px 20px; margin: 16px 0; }
+.highlight-box strong { color: #744210; }
+.highlight-box p { color: #744210; margin: 0; font-size: 13.5px; }
+.info-box { background: #ebf8ff; border: 1px solid #90cdf4; border-radius: 8px; padding: 16px 20px; margin: 16px 0; }
+.info-box p { color: #2c5282; margin: 0; font-size: 13.5px; }
+.success-box { background: #f0fff4; border: 1px solid #9ae6b4; border-radius: 8px; padding: 16px 20px; margin: 16px 0; }
+.success-box p { color: #276749; margin: 0; font-size: 13.5px; }
+.unit-examples { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+.unit-tag { background: #ebf8ff; border: 1px solid #90cdf4; color: #2c5282; padding: 3px 10px; border-radius: 4px; font-size: 12px; font-family: monospace; }
+.step-list { counter-reset: steps; list-style: none; padding: 0; }
+.step-list li { counter-increment: steps; display: flex; gap: 14px; margin-bottom: 14px; }
+.step-list li::before { content: counter(steps); min-width: 28px; height: 28px; background: var(--accent); color: var(--text); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+.cat-spec-table th:nth-child(2), .cat-spec-table td:nth-child(2) { width: 120px; }
+.product-overview { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+.product-overview-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+.product-overview-card h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); margin-bottom: 6px; }
+.product-overview-card p { font-size: 14px; color: var(--text); font-weight: 500; margin: 0; }
+.simpolo-header { display: flex; align-items: center; gap: 16px; background: var(--sidebar-bg); border-radius: 10px; padding: 24px 28px; margin-bottom: 32px; }
+.simpolo-header .brand-badge { background: var(--accent); color: #1a1d23; border-radius: 8px; padding: 10px 16px; font-weight: 800; font-size: 18px; letter-spacing: -0.5px; white-space: nowrap; }
+.simpolo-header h2 { color: #fff; border: none; padding: 0; margin: 0; font-size: 22px; }
+.simpolo-header p { color: #b0b4bc; margin: 4px 0 0; font-size: 13.5px; }
+.variant-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 16px 0; }
+.variant-card { background: var(--card-bg); border: 2px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+.variant-card.primary { border-color: var(--accent); }
+.variant-card h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin-bottom: 8px; }
+.variant-card .vc-val { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.variant-card .vc-note { font-size: 12px; color: var(--text-secondary); }
+.export-preview { background: #fff; border: 2px solid var(--accent); border-radius: 10px; padding: 20px 24px; margin: 16px 0; }
+.export-preview h4 { color: var(--text); margin-bottom: 12px; }
+.export-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.export-chip { background: var(--sidebar-bg); color: var(--accent); padding: 6px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; font-family: monospace; }
+.export-chip span { color: #6a737d; font-weight: 400; }
+.path-display { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; margin: 8px 0 16px; flex-wrap: wrap; }
+.path-arrow { color: var(--text-secondary); }
+.path-part { background: var(--accent); color: #1a1d23; padding: 3px 10px; border-radius: 4px; font-weight: 700; }
+.path-part.sub { background: #e9f8b6; color: #2d3a00; }
+.path-part.subsub { background: #f0fff4; color: #1a4731; border: 1px solid #9ae6b4; }
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .content { margin-left: 0; padding: 20px 16px; padding-top: 60px; }
+  .menu-toggle { display: block; }
+  table { font-size: 12px; }
+  th, td { padding: 6px 8px; }
+  .spec-grid, .product-overview, .variant-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">&#9776;</button>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h1>Materialogue</h1>
+    <p>Brand Partner Guide</p>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('general', this)">General Guide</button>
+    <button class="tab-btn" onclick="switchTab('simpolo', this)">Simpolo Example</button>
+  </div>
+
+  <nav id="nav-general">
+    <div class="nav-group">Getting Started</div>
+    <a href="#overview">Overview</a>
+    <a href="#quickstart">Quick Start</a>
+    <div class="nav-group">Brand Information</div>
+    <a href="#brand-structure">Brand Profile Fields</a>
+    <a href="#brand-collections">Collections</a>
+    <a href="#brand-partners">Channel Partners</a>
+    <div class="nav-group">Products</div>
+    <a href="#product-required">Required Fields</a>
+    <a href="#product-identification">Identification</a>
+    <a href="#product-descriptions">Descriptions &amp; Pricing</a>
+    <a href="#product-specs">Specification Fields</a>
+    <a href="#product-images">Images</a>
+    <div class="nav-group">Category Taxonomy</div>
+    <a href="#cat-walls">Walls &amp; Floor</a>
+    <a href="#cat-sanitary">Sanitary</a>
+    <a href="#cat-paints">Paints</a>
+    <a href="#cat-surfaces">Surfaces</a>
+    <a href="#cat-fabrics">Fabrics</a>
+    <a href="#cat-lights">Lights</a>
+    <a href="#cat-electricals">Electricals</a>
+    <a href="#cat-hardware">Hardware</a>
+    <div class="nav-group">Reference</div>
+    <a href="#specs-by-category">Specs by Category</a>
+    <a href="#image-guidelines">Image Guidelines</a>
+  </nav>
+
+  <nav id="nav-simpolo" style="display:none">
+    <div class="nav-group">Simpolo Example</div>
+    <a href="#simp-intro">Introduction</a>
+    <a href="#simp-product">The Product</a>
+    <a href="#simp-category">Category Path</a>
+    <a href="#simp-payload">Full API Payload</a>
+    <a href="#simp-annotations">Field Annotations</a>
+    <a href="#simp-variants">Handling Variants</a>
+    <a href="#simp-variant2">Size Variant Example</a>
+    <a href="#simp-exports">What Shows on Exports</a>
+  </nav>
+</aside>
+
+<main class="content">
+
+<!-- ======================================================= -->
+<!-- TAB: GENERAL GUIDE                                       -->
+<!-- ======================================================= -->
+<div id="tab-general">
+
+<section id="overview">
+  <div class="intro-card">
+    <h2>Brand Partner Guide</h2>
+    <p style="margin-top:12px;font-size:15px;">This guide explains how Materialogue structures brand and product data. Use it when adding or updating your brand information and product catalog through the Brand Partner API.</p>
+    <p style="margin-top:8px;">Every field is described with its data type, whether it is required or optional, accepted formats, and real examples. Switch to the <strong style="color:var(--accent)">Simpolo Example</strong> tab above to see a fully worked product submission.</p>
+  </div>
+</section>
+
+<section id="quickstart">
+  <h2>Quick Start</h2>
+  <p>To start using the API, you need an API key issued by Materialogue. Once you have it, all requests must include it in the header:</p>
+  <pre>X-API-Key: your-api-key-here</pre>
+  <ol class="step-list">
+    <li><div><strong>Get your API key</strong> from the Materialogue team. Each key is scoped to your brand only — you cannot access or modify another brand's data.</div></li>
+    <li><div><strong>Check your brand profile</strong> by calling <code>GET /brand-api/brand</code> to see what's currently on file.</div></li>
+    <li><div><strong>Update your profile</strong> with <code>PUT /brand-api/brand</code> — only send the fields you want to change.</div></li>
+    <li><div><strong>List your products</strong> with <code>GET /brand-api/products</code> and start adding or updating.</div></li>
+  </ol>
+</section>
+
+<section id="brand-structure">
+  <h2>Brand Profile Fields</h2>
+  <p>Your brand profile is what appears on the Materialogue brand information page. All fields except <code>name</code> are optional but strongly recommended for a complete listing.</p>
+  <table>
+    <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description &amp; Format</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><code>name</code></td><td><span class="badge badge-type">String</span></td><td><span class="badge badge-required">Required</span></td><td>Your brand name. Set by Materialogue — cannot be changed via API.</td><td><code>"Kohler"</code></td></tr>
+      <tr><td><code>logo_url</code></td><td><span class="badge badge-type">String (URL)</span></td><td><span class="badge badge-optional">Optional</span></td><td>Full URL to your brand logo. Host it on DigitalOcean Spaces or another CDN. SVG or PNG preferred, transparent background.</td><td><code>"https://materialogue.blr1.cdn..."</code></td></tr>
+      <tr><td><code>description</code></td><td><span class="badge badge-type">String</span></td><td><span class="badge badge-optional">Optional</span></td><td>About your brand — history, manufacturing, positioning. Plain text. 100–500 words recommended.</td><td><code>"Kohler Co. is a global leader..."</code></td></tr>
+      <tr><td><code>hero_images</code></td><td><span class="badge badge-type">Array of Strings</span></td><td><span class="badge badge-optional">Optional</span></td><td>Array of image URLs shown as banners on the brand page. Landscape orientation, minimum 1400px wide.</td><td><code>["https://cdn.../hero.jpg"]</code></td></tr>
+      <tr><td><code>headquarters</code></td><td><span class="badge badge-type">Object</span></td><td><span class="badge badge-optional">Optional</span></td><td>Two-line address object with <code>address_line1</code> and <code>address_line2</code> — both strings.</td><td>See below</td></tr>
+      <tr><td><code>collections</code></td><td><span class="badge badge-type">Array of Objects</span></td><td><span class="badge badge-optional">Optional</span></td><td>Each item has <code>name</code> (string) and <code>cover_image</code> (URL). Sending this replaces the entire list.</td><td>See Collections section</td></tr>
+      <tr><td><code>channel_partners</code></td><td><span class="badge badge-type">Array of Objects</span></td><td><span class="badge badge-optional">Optional</span></td><td>Each item has <code>state</code> (string) and <code>cities</code> (array of strings). Sending this replaces the entire list.</td><td>See Channel Partners section</td></tr>
+      <tr><td><code>contact</code></td><td><span class="badge badge-type">Object</span></td><td><span class="badge badge-optional">Optional</span></td><td>Fields: <code>brand_name</code>, <code>address</code>, <code>phone</code>, <code>email</code> — all strings.</td><td>See below</td></tr>
+    </tbody>
+  </table>
+  <h3>Complete brand update example</h3>
+  <pre>{
+  "description": "Kohler Co. is a global leader in kitchen and bath products, founded in 1873.",
+  "logo_url": "https://materialogue.blr1.cdn.digitaloceanspaces.com/brands/kohler/logo.svg",
+  "hero_images": ["https://materialogue.blr1.cdn.digitaloceanspaces.com/brands/kohler/hero1.jpg"],
+  "headquarters": {
+    "address_line1": "6th Floor, Corporate Office Tower, Ambience Island, NH-08",
+    "address_line2": "Gurugram, Haryana 122001, India"
+  },
+  "contact": {
+    "brand_name": "Kohler India Corporation",
+    "address": "6th Floor, Corporate Office Tower, Gurugram, Haryana 122001",
+    "phone": "+91 124 4561000",
+    "email": "customercare@kohler.co.in"
+  }
+}</pre>
+  <div class="info-box"><p><strong>Partial updates:</strong> You only need to send the fields you want to change. Omitting a field leaves it unchanged.</p></div>
+</section>
+
+<section id="brand-collections">
+  <h2>Collections</h2>
+  <p>Collections represent your product ranges or lines. They appear on your brand page as visual tiles.</p>
+  <table>
+    <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>name</code></td><td><span class="badge badge-type">String</span></td><td><span class="badge badge-required">Required</span></td><td>Name of the collection, e.g. <code>"Purist"</code>, <code>"Alchimia"</code>, <code>"Impatto"</code></td></tr>
+      <tr><td><code>cover_image</code></td><td><span class="badge badge-type">String (URL)</span></td><td><span class="badge badge-optional">Optional</span></td><td>Cover image URL. Square or portrait preferred. Hosted on DigitalOcean Spaces.</td></tr>
+    </tbody>
+  </table>
+  <pre>"collections": [
+  { "name": "Alchimia",  "cover_image": "https://materialogue.blr1.cdn.digitaloceanspaces.com/brands/simpolo/collections/alchimia.jpg" },
+  { "name": "Impatto",   "cover_image": "https://materialogue.blr1.cdn.digitaloceanspaces.com/brands/simpolo/collections/impatto.jpg" },
+  { "name": "Basaltino", "cover_image": "" }
+]</pre>
+  <div class="highlight-box"><strong>Full replacement:</strong> <p>Sending <code>collections</code> replaces the entire list. Always include all collections when updating.</p></div>
+</section>
+
+<section id="brand-partners">
+  <h2>Channel Partners</h2>
+  <p>Channel partners show your dealer/distributor network, organised by state and city.</p>
+  <table>
+    <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>state</code></td><td><span class="badge badge-type">String</span></td><td><span class="badge badge-required">Required</span></td><td>State name, e.g. <code>"Maharashtra"</code>, <code>"Gujarat"</code>, <code>"Delhi NCR"</code></td></tr>
+      <tr><td><code>cities</code></td><td><span class="badge badge-type">Array of Strings</span></td><td><span class="badge badge-optional">Optional</span></td><td>Cities within that state, e.g. <code>["Mumbai", "Pune", "Nagpur"]</code></td></tr>
+    </tbody>
+  </table>
+  <pre>"channel_partners": [
+  { "state": "Gujarat",      "cities": ["Ahmedabad", "Surat", "Vadodara", "Rajkot"] },
+  { "state": "Maharashtra",  "cities": ["Mumbai", "Pune", "Nagpur"] },
+  { "state": "Delhi NCR",    "cities": ["New Delhi", "Noida", "Gurgaon"] }
+]</pre>
+  <div class="highlight-box"><strong>Full replacement:</strong> <p>Sending <code>channel_partners</code> replaces the entire list. Include all states when updating.</p></div>
+</section>
+
+<section id="product-required">
+  <h2>Required Product Fields</h2>
+  <p>Every product must have these four fields. If any is missing, the product will be rejected.</p>
+  <table>
+    <thead><tr><th>Field</th><th>Type</th><th>Description</th><th>Valid values</th></tr></thead>
+    <tbody>
+      <tr><td><code>category</code></td><td><span class="badge badge-type">String</span></td><td>Top-level product category. Must match exactly (case-sensitive).</td><td><code>Walls &amp; Floor</code> · <code>Sanitary</code> · <code>Paints</code> · <code>Surfaces</code> · <code>Fabrics</code> · <code>Lights</code> · <code>Electricals</code> · <code>Hardware</code></td></tr>
+      <tr><td><code>primary_sub_category</code></td><td><span class="badge badge-type">String</span></td><td>Sub-category within the main category. See the full Category Taxonomy below.</td><td>e.g. <code>Tile</code>, <code>Basin Area</code>, <code>Laminate</code>, <code>Fan</code></td></tr>
+      <tr><td><code>secondary_sub_category</code></td><td><span class="badge badge-type">String</span></td><td>Specific product type within the sub-category.</td><td>e.g. <code>Porcelain Tile</code>, <code>Wash Basin</code>, <code>Solid Laminate</code></td></tr>
+      <tr><td><code>product_name</code></td><td><span class="badge badge-type">String</span></td><td>The product's display name. Keep it clear and descriptive.</td><td>e.g. <code>"Alchimia Graphite"</code></td></tr>
+    </tbody>
+  </table>
+  <div class="highlight-box"><strong>Category values are exact strings.</strong> <p>Use the Category Taxonomy section to find the correct spelling. Use <code>"Walls &amp; Floor"</code> not <code>"Walls and Floor"</code>.</p></div>
+</section>
+
+<section id="product-identification">
+  <h2>Identification &amp; Classification</h2>
+  <table>
+    <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>product_code</code></td><td><span class="badge badge-type">String</span></td><td>Your internal SKU or model number, e.g. <code>"INFB0RX0326"</code>. Indexed for fast lookup.</td></tr>
+      <tr><td><code>primary_sku</code></td><td><span class="badge badge-type">String</span></td><td>Primary SKU if different from product_code.</td></tr>
+      <tr><td><code>sku_variation</code></td><td><span class="badge badge-type">String</span></td><td>Variation identifier for colour/size variants of the same base product. e.g. <code>"1198x1198-Matt"</code></td></tr>
+      <tr><td><code>collection</code></td><td><span class="badge badge-type">String</span></td><td>The collection/range this product belongs to, e.g. <code>"Alchimia"</code>.</td></tr>
+      <tr><td><code>tags</code></td><td><span class="badge badge-type">Array of Strings</span></td><td>Free-form search tags, e.g. <code>["vitrified", "large-format", "concrete-look"]</code>.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="product-descriptions">
+  <h2>Descriptions &amp; Pricing</h2>
+  <table>
+    <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>tagline_description</code></td><td><span class="badge badge-type">String</span></td><td>A short one-line tagline shown on product cards. Keep under 80 characters.</td></tr>
+      <tr><td><code>description</code></td><td><span class="badge badge-type">String</span></td><td>Full product description. Plain text. No HTML. 50–300 words recommended.</td></tr>
+      <tr><td><code>price1</code></td><td><span class="badge badge-type">Number</span></td><td>Primary price. A number only — no currency symbols or commas. <code>850</code> not <code>"&#8377;850"</code>.</td></tr>
+      <tr><td><code>unit1</code></td><td><span class="badge badge-type">String</span></td><td>Unit for price1. Common values below.</td></tr>
+      <tr><td><code>price2</code></td><td><span class="badge badge-type">Number</span></td><td>Secondary price — used for alternate pricing tiers.</td></tr>
+      <tr><td><code>unit2</code></td><td><span class="badge badge-type">String</span></td><td>Unit for price2.</td></tr>
+    </tbody>
+  </table>
+  <h4>Common unit values</h4>
+  <div class="unit-examples">
+    <span class="unit-tag">/piece</span><span class="unit-tag">/set</span><span class="unit-tag">/sqft</span><span class="unit-tag">/sqm</span><span class="unit-tag">/mtr</span><span class="unit-tag">/rmt</span><span class="unit-tag">/roll</span><span class="unit-tag">/box</span><span class="unit-tag">/litre</span><span class="unit-tag">/kg</span><span class="unit-tag">/pair</span>
+  </div>
+</section>
+
+<section id="product-specs">
+  <h2>Specification Fields</h2>
+  <p>These fields describe the physical and technical properties of a product. All are optional strings unless noted. Only fill in fields relevant to your product category — see Specs by Category for guidance.</p>
+  <div class="spec-grid">
+    <div class="spec-card">
+      <h4>Appearance</h4>
+      <div class="spec-field"><code>color</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>color_for_filter</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>color_code</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>finish</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>pattern</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>shape</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>grain_type</code> <span class="badge badge-type">String</span></div>
+    </div>
+    <div class="spec-card">
+      <h4>Physical</h4>
+      <div class="spec-field"><code>size</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>thickness</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>material</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>marble_type</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>stone_type</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>wood_species</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>installation_type</code> <span class="badge badge-type">String</span></div>
+    </div>
+    <div class="spec-card">
+      <h4>Lighting / Electrical</h4>
+      <div class="spec-field"><code>wattage</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>temperature</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>beam_angle</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>voltage</code> <span class="badge badge-type">Number</span></div>
+      <div class="spec-field"><code>power_consumption</code> <span class="badge badge-type">Number</span></div>
+      <div class="spec-field"><code>illumination</code> <span class="badge badge-type">String</span></div>
+    </div>
+    <div class="spec-card">
+      <h4>Sanitary-specific</h4>
+      <div class="spec-field"><code>faucet_type</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>cock_type</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>rim_type</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>thermostatic</code> <span class="badge badge-type">Boolean</span></div>
+      <div class="spec-field"><code>shower_function</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>no_of_outlets</code> <span class="badge badge-type">Number</span></div>
+      <div class="spec-field"><code>water_saving</code> <span class="badge badge-type">String</span></div>
+    </div>
+    <div class="spec-card">
+      <h4>Fan / Electrical</h4>
+      <div class="spec-field"><code>sweep_size</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>number_of_blades</code> <span class="badge badge-type">Number</span></div>
+      <div class="spec-field"><code>fan_speed</code> <span class="badge badge-type">Number</span></div>
+      <div class="spec-field"><code>air_delivery</code> <span class="badge badge-type">Number</span></div>
+      <div class="spec-field"><code>speed_levels</code> <span class="badge badge-type">Number</span></div>
+      <div class="spec-field"><code>control_method</code> <span class="badge badge-type">String</span></div>
+    </div>
+    <div class="spec-card">
+      <h4>Fabrics / Soft Furnishings</h4>
+      <div class="spec-field"><code>martindale</code> <span class="badge badge-type">Number</span></div>
+      <div class="spec-field"><code>pile_height</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>roll_size</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>curtain_width</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>pasting</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>nrc_value</code> <span class="badge badge-type">Number</span></div>
+    </div>
+    <div class="spec-card">
+      <h4>Paint</h4>
+      <div class="spec-field"><code>paint_type</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>color_type</code> <span class="badge badge-type">String</span></div>
+    </div>
+    <div class="spec-card">
+      <h4>Hardware / Security</h4>
+      <div class="spec-field"><code>lock_type</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>door_thickness</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>door_control_system_type</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>camera_features</code> <span class="badge badge-type">String</span></div>
+      <div class="spec-field"><code>actuation_type</code> <span class="badge badge-type">String</span></div>
+    </div>
+    <div class="spec-card">
+      <h4>Technical Documents</h4>
+      <div class="spec-field"><code>hd_textures_pdf</code> <span class="badge badge-type">String (URL)</span></div>
+      <div class="spec-field"><code>specs_sheet</code> <span class="badge badge-type">String (URL)</span></div>
+      <div class="spec-field"><code>installation_guide</code> <span class="badge badge-type">String (URL)</span></div>
+      <div class="spec-field"><code>special_features</code> <span class="badge badge-type">String</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="product-images">
+  <h2>Product Images</h2>
+  <p>Images are stored as an <strong>array of URL strings</strong>. All images must be hosted on DigitalOcean Spaces or another publicly accessible CDN before being added to Materialogue.</p>
+  <table>
+    <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>images</code></td><td><span class="badge badge-type">Array of Strings</span></td><td>Array of image URLs. First image is the primary/thumbnail. Minimum 1 image recommended.</td></tr>
+    </tbody>
+  </table>
+  <pre>"images": [
+  "https://materialogue.blr1.cdn.digitaloceanspaces.com/Images/Simpolo/alchimia-graphite-main.jpg",
+  "https://materialogue.blr1.cdn.digitaloceanspaces.com/Images/Simpolo/alchimia-graphite-r1.jpg"
+]</pre>
+</section>
+
+<section id="cat-walls">
+  <h2>Category Taxonomy — Walls &amp; Floor</h2>
+  <p>Use the exact strings below for <code>category</code>, <code>primary_sub_category</code>, and <code>secondary_sub_category</code>.</p>
+  <div class="cat-tree">
+    <div class="cat-level1">
+      <div class="cat-level1-name">Walls &amp; Floor</div>
+      <div class="cat-level2">
+        <div class="cat-level2-name">Tile</div>
+        <div class="cat-level3"><span class="cat-tag">Ceramic Tile</span><span class="cat-tag">Porcelain Tile</span><span class="cat-tag">Vitrified Tile</span><span class="cat-tag">GVT Tile</span><span class="cat-tag">Glass Tile</span></div>
+        <div class="cat-level2-name">Marble</div>
+        <div class="cat-level3"><span class="cat-tag">Italian Marble</span><span class="cat-tag">Indian Marble</span><span class="cat-tag">Brazilian Marble</span><span class="cat-tag">Turkish Marble</span><span class="cat-tag">Spanish Marble</span><span class="cat-tag">Iranian Marble</span><span class="cat-tag">Exotic Marble</span></div>
+        <div class="cat-level2-name">Natural Stone</div>
+        <div class="cat-level3"><span class="cat-tag">Granite</span><span class="cat-tag">Limestone</span><span class="cat-tag">Sandstone</span><span class="cat-tag">Quartzite</span><span class="cat-tag">Travertine</span><span class="cat-tag">Onyx</span><span class="cat-tag">Slate</span></div>
+        <div class="cat-level2-name">Engineered Stone</div>
+        <div class="cat-level3"><span class="cat-tag">Composite Stone</span><span class="cat-tag">Quartz Slab</span><span class="cat-tag">Solid Surface</span><span class="cat-tag">Terrazzo</span></div>
+        <div class="cat-level2-name">Mosaic</div>
+        <div class="cat-level3"><span class="cat-tag">Glass Mosaic</span><span class="cat-tag">Stone Mosaic</span><span class="cat-tag">Metal Mosaic</span><span class="cat-tag">Ceramic Mosaic</span><span class="cat-tag">Shell Mosaic</span></div>
+        <div class="cat-level2-name">Wood Flooring</div>
+        <div class="cat-level3"><span class="cat-tag">Solid Wood Flooring</span><span class="cat-tag">Engineered Wood Flooring</span><span class="cat-tag">Vinyl Wood Flooring</span><span class="cat-tag">Laminate Wood Flooring</span><span class="cat-tag">Reclaimed Wood Flooring</span><span class="cat-tag">Outdoor Deck Flooring</span></div>
+        <div class="cat-level2-name">Carpet</div>
+        <div class="cat-level3"><span class="cat-tag">Carpet Roll</span><span class="cat-tag">Carpet Tile</span><span class="cat-tag">Rug</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cat-sanitary">
+  <h2>Category Taxonomy — Sanitary</h2>
+  <div class="cat-tree">
+    <div class="cat-level1">
+      <div class="cat-level1-name">Sanitary</div>
+      <div class="cat-level2">
+        <div class="cat-level2-name">Toilet Area</div>
+        <div class="cat-level3"><span class="cat-tag">WC</span><span class="cat-tag">Toilet Seat</span><span class="cat-tag">Flush Tank</span><span class="cat-tag">Flush Valve</span><span class="cat-tag">Flush Plate</span><span class="cat-tag">Bidet</span><span class="cat-tag">Health Faucet</span><span class="cat-tag">Angle Valve</span><span class="cat-tag">Bib Cock</span><span class="cat-tag">Stop Cock</span><span class="cat-tag">Drain Cover</span></div>
+        <div class="cat-level2-name">Basin Area</div>
+        <div class="cat-level3"><span class="cat-tag">Wash Basin</span><span class="cat-tag">Basin Faucet</span><span class="cat-tag">Angle Valve</span><span class="cat-tag">Vanity</span><span class="cat-tag">Mirror</span></div>
+        <div class="cat-level2-name">Shower Area</div>
+        <div class="cat-level3"><span class="cat-tag">Shower Diverter</span><span class="cat-tag">Shower Arm</span><span class="cat-tag">Hand Shower</span><span class="cat-tag">Overhead Shower</span><span class="cat-tag">Bath Spout</span><span class="cat-tag">Body Shower</span><span class="cat-tag">Shower Enclosure</span></div>
+        <div class="cat-level2-name">Wellness</div>
+        <div class="cat-level3"><span class="cat-tag">Bath Tub</span><span class="cat-tag">Jacuzzi</span><span class="cat-tag">Bath Tub Faucet</span><span class="cat-tag">Steam Generator</span></div>
+        <div class="cat-level2-name">Accessories</div>
+        <div class="cat-level3"><span class="cat-tag">Toilet Paper Holder</span><span class="cat-tag">Robe Hook</span><span class="cat-tag">Towel Holder</span><span class="cat-tag">Tumbler Holder</span><span class="cat-tag">Soap Holder</span><span class="cat-tag">Toilet Brush Holder</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cat-paints">
+  <h2>Category Taxonomy — Paints</h2>
+  <div class="cat-tree">
+    <div class="cat-level1">
+      <div class="cat-level1-name">Paints</div>
+      <div class="cat-level2">
+        <div class="cat-level2-name">Indoor Paint</div>
+        <div class="cat-level3"><span class="cat-tag">White</span><span class="cat-tag">Beige</span><span class="cat-tag">Yellow</span><span class="cat-tag">Orange</span><span class="cat-tag">Red</span><span class="cat-tag">Pink</span><span class="cat-tag">Green</span><span class="cat-tag">Blue</span><span class="cat-tag">Purple</span><span class="cat-tag">Brown</span><span class="cat-tag">Grey</span><span class="cat-tag">Black</span></div>
+        <div class="cat-level2-name">Exterior Paint</div>
+        <div class="cat-level3"><span class="cat-tag">White</span><span class="cat-tag">Beige</span><span class="cat-tag">Yellow</span><span class="cat-tag">Orange</span><span class="cat-tag">Red</span><span class="cat-tag">Pink</span><span class="cat-tag">Green</span><span class="cat-tag">Blue</span><span class="cat-tag">Purple</span><span class="cat-tag">Brown</span><span class="cat-tag">Grey</span><span class="cat-tag">Black</span></div>
+        <div class="cat-level2-name">Wood Coating</div>
+        <div class="cat-level3"><span class="cat-tag">Clear Coat</span><span class="cat-tag">Special Coat</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="info-box"><p>For paints, <code>secondary_sub_category</code> is the <strong>colour family</strong> (e.g. <code>"Beige"</code>). The actual shade name goes in <code>product_name</code>.</p></div>
+</section>
+
+<section id="cat-surfaces">
+  <h2>Category Taxonomy — Surfaces</h2>
+  <div class="cat-tree">
+    <div class="cat-level1">
+      <div class="cat-level1-name">Surfaces</div>
+      <div class="cat-level2">
+        <div class="cat-level2-name">Veneer</div>
+        <div class="cat-level3"><span class="cat-tag">Natural Veneer</span><span class="cat-tag">Dyed Veneer</span><span class="cat-tag">Reconstituted Veneer</span><span class="cat-tag">Decorative Veneer</span><span class="cat-tag">Textured Veneer</span></div>
+        <div class="cat-level2-name">Laminate</div>
+        <div class="cat-level3"><span class="cat-tag">Solid Laminate</span><span class="cat-tag">Wood Laminate</span><span class="cat-tag">Metallic Laminate</span><span class="cat-tag">Marble Laminate</span><span class="cat-tag">Stone Laminate</span><span class="cat-tag">Decorative Laminate</span><span class="cat-tag">Fabric Laminate</span><span class="cat-tag">Internal Laminate</span></div>
+        <div class="cat-level2-name">Panel</div>
+        <div class="cat-level3"><span class="cat-tag">Aluminum Composite Panel</span><span class="cat-tag">Charcoal Panel</span><span class="cat-tag">PVC Panel</span><span class="cat-tag">Metal Panel</span><span class="cat-tag">Fiber Cement Panel</span><span class="cat-tag">MDF / HDF Panel</span><span class="cat-tag">Hardwood Panel</span><span class="cat-tag">Resin Solid Surface Panel</span><span class="cat-tag">Alabaster Panel</span><span class="cat-tag">Acoustic Panel</span><span class="cat-tag">Acrylic Panel</span><span class="cat-tag">Natural Fiber Panel</span></div>
+        <div class="cat-level2-name">Rattan / Cane</div>
+        <div class="cat-level3"><span class="cat-tag">Natural Rattan/Cane</span><span class="cat-tag">Synthetic Rattan/Cane</span></div>
+        <div class="cat-level2-name">Wallpaper</div>
+        <div class="cat-level3"><span class="cat-tag">Non-Woven Wallpaper</span><span class="cat-tag">Vinyl Wallpaper</span><span class="cat-tag">Fabric Wallpaper</span><span class="cat-tag">Grasscloth Wallpaper</span><span class="cat-tag">Metallic Wallpaper</span><span class="cat-tag">Natural Fibre Wallpaper</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cat-fabrics">
+  <h2>Category Taxonomy — Fabrics</h2>
+  <div class="cat-tree">
+    <div class="cat-level1">
+      <div class="cat-level1-name">Fabrics</div>
+      <div class="cat-level2">
+        <div class="cat-level2-name">Curtain</div>
+        <div class="cat-level3"><span class="cat-tag">Sheer Curtain</span><span class="cat-tag">Blackout Curtain</span><span class="cat-tag">Eyelet Curtain</span><span class="cat-tag">Linen Curtain</span><span class="cat-tag">Velvet Curtain</span><span class="cat-tag">Geometric Curtain</span><span class="cat-tag">Floral Curtain</span><span class="cat-tag">Striped Curtain</span></div>
+        <div class="cat-level2-name">Upholstery</div>
+        <div class="cat-level3"><span class="cat-tag">Leather Upholstery</span><span class="cat-tag">Velvet Upholstery</span><span class="cat-tag">Linen Upholstery</span><span class="cat-tag">Cotton Upholstery</span><span class="cat-tag">Brocade Upholstery</span><span class="cat-tag">Jacquard Upholstery</span><span class="cat-tag">Outdoor Upholstery</span></div>
+        <div class="cat-level2-name">Sheer</div>
+        <div class="cat-level3"><span class="cat-tag">Plain Sheer</span><span class="cat-tag">Printed Sheer</span><span class="cat-tag">Embroidered Sheer</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cat-lights">
+  <h2>Category Taxonomy — Lights</h2>
+  <div class="cat-tree">
+    <div class="cat-level1">
+      <div class="cat-level1-name">Lights</div>
+      <div class="cat-level2">
+        <div class="cat-level2-name">Architectural Light</div>
+        <div class="cat-level3"><span class="cat-tag">Downlight</span><span class="cat-tag">Spotlight</span><span class="cat-tag">Linear Light</span><span class="cat-tag">Strip Light</span><span class="cat-tag">Cove Light</span><span class="cat-tag">Panel Light</span><span class="cat-tag">Track Light</span><span class="cat-tag">Step Light</span><span class="cat-tag">Outdoor Light</span><span class="cat-tag">Flood Light</span></div>
+        <div class="cat-level2-name">Decorative Light</div>
+        <div class="cat-level3"><span class="cat-tag">Chandelier</span><span class="cat-tag">Pendant Light</span><span class="cat-tag">Wall Sconce</span><span class="cat-tag">Table Lamp</span><span class="cat-tag">Floor Lamp</span><span class="cat-tag">Ceiling Light</span><span class="cat-tag">Cluster Light</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cat-electricals">
+  <h2>Category Taxonomy — Electricals</h2>
+  <div class="cat-tree">
+    <div class="cat-level1">
+      <div class="cat-level1-name">Electricals</div>
+      <div class="cat-level2">
+        <div class="cat-level2-name">Switches &amp; Accessories</div>
+        <div class="cat-level3"><span class="cat-tag">Switch</span><span class="cat-tag">Switch Plate</span><span class="cat-tag">Socket</span><span class="cat-tag">Touch Panel</span><span class="cat-tag">Fan Regulator</span></div>
+        <div class="cat-level2-name">Fan</div>
+        <div class="cat-level3"><span class="cat-tag">Ceiling Fan</span><span class="cat-tag">Wall Fan</span><span class="cat-tag">Table Fan</span><span class="cat-tag">Pedestal Fan</span><span class="cat-tag">Exhaust Fan</span><span class="cat-tag">Bladeless Fan</span></div>
+        <div class="cat-level2-name">Electrical Accessories</div>
+        <div class="cat-level3"><span class="cat-tag">Motion Sensor</span><span class="cat-tag">Presence Sensor</span><span class="cat-tag">Night Light</span><span class="cat-tag">Dimmer</span><span class="cat-tag">Buzzer</span><span class="cat-tag">Bell</span><span class="cat-tag">Infra Red Sensor</span><span class="cat-tag">Mosquito Repellant</span><span class="cat-tag">Speaker</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cat-hardware">
+  <h2>Category Taxonomy — Hardware</h2>
+  <div class="cat-tree">
+    <div class="cat-level1">
+      <div class="cat-level1-name">Hardware</div>
+      <div class="cat-level2">
+        <div class="cat-level2-name">Architectural Hardware</div>
+        <div class="cat-level3"><span class="cat-tag">Mortise Handle</span><span class="cat-tag">Mortise Lock</span><span class="cat-tag">Pull Handle</span><span class="cat-tag">Pull Knob</span><span class="cat-tag">Wall Hook</span><span class="cat-tag">Door Control System</span></div>
+        <div class="cat-level2-name">Digital Solution</div>
+        <div class="cat-level3"><span class="cat-tag">Digital Door Lock</span><span class="cat-tag">Digital Drawer Lock</span><span class="cat-tag">Digital Safe</span><span class="cat-tag">Smart Camera</span><span class="cat-tag">Video Door Access Control</span></div>
+        <div class="cat-level2-name">Glass Solution</div>
+        <div class="cat-level3"><span class="cat-tag">Handle for Glass</span><span class="cat-tag">Pivot Fitting</span><span class="cat-tag">Patch Fitting</span><span class="cat-tag">Profile Fitting</span><span class="cat-tag">Sliding Fitting</span><span class="cat-tag">Lock - Glass Door</span></div>
+        <div class="cat-level2-name">Aluminium Profile</div>
+        <div class="cat-level3"><span class="cat-tag">Frame Profile</span><span class="cat-tag">Handle Profile</span><span class="cat-tag">Edge Profile</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="specs-by-category">
+  <h2>Recommended Specs by Category</h2>
+  <p>These are the fields shown on Materialogue's Selection Sheet and Order Sheet exports. Fill in the relevant fields for accurate export output.</p>
+  <table class="cat-spec-table">
+    <thead><tr><th>Category</th><th>Sub-Category</th><th>Spec 1</th><th>Spec 2</th></tr></thead>
+    <tbody>
+      <tr><td>Walls &amp; Floor</td><td><strong>Tile</strong></td><td><code>size</code></td><td><code>finish</code></td></tr>
+      <tr><td>Walls &amp; Floor</td><td>Marble</td><td><code>collection</code></td><td><code>thickness</code></td></tr>
+      <tr><td>Walls &amp; Floor</td><td>Natural Stone</td><td><code>collection</code></td><td><code>thickness</code></td></tr>
+      <tr><td>Walls &amp; Floor</td><td>Engineered Stone</td><td><code>size</code></td><td><code>thickness</code></td></tr>
+      <tr><td>Walls &amp; Floor</td><td>Wood Flooring</td><td><code>size</code></td><td><code>thickness</code></td></tr>
+      <tr><td>Walls &amp; Floor</td><td>Carpet</td><td><code>size</code></td><td><code>thickness</code></td></tr>
+      <tr><td>Sanitary</td><td>Toilet Area</td><td><code>color</code></td><td><code>finish</code></td></tr>
+      <tr><td>Sanitary</td><td>Basin Area</td><td><code>color</code></td><td><code>finish</code></td></tr>
+      <tr><td>Sanitary</td><td>Shower Area</td><td><code>color</code></td><td><code>finish</code></td></tr>
+      <tr><td>Sanitary</td><td>Wellness</td><td><code>size</code></td><td><code>finish</code></td></tr>
+      <tr><td>Sanitary</td><td>Accessories</td><td><code>color</code></td><td><code>finish</code></td></tr>
+      <tr><td>Surfaces</td><td>Veneer</td><td><code>size</code></td><td><code>finish</code></td></tr>
+      <tr><td>Surfaces</td><td>Laminate</td><td><code>size</code></td><td><code>finish</code></td></tr>
+      <tr><td>Surfaces</td><td>Panel</td><td><code>size</code></td><td><code>pattern</code></td></tr>
+      <tr><td>Surfaces</td><td>Rattan / Cane</td><td><code>size</code></td><td><code>pattern</code></td></tr>
+      <tr><td>Surfaces</td><td>Wallpaper</td><td><code>pattern</code></td><td><code>roll_size</code></td></tr>
+      <tr><td>Paints</td><td>Indoor Paint</td><td><code>paint_type</code></td><td><code>collection</code></td></tr>
+      <tr><td>Paints</td><td>Exterior Paint</td><td><code>paint_type</code></td><td><code>collection</code></td></tr>
+      <tr><td>Paints</td><td>Wood Coating</td><td><code>finish</code></td><td><code>collection</code></td></tr>
+      <tr><td>Fabrics</td><td>Curtain</td><td><code>collection</code></td><td><code>material</code></td></tr>
+      <tr><td>Fabrics</td><td>Upholstery</td><td><code>collection</code></td><td><code>material</code></td></tr>
+      <tr><td>Fabrics</td><td>Sheer</td><td><code>collection</code></td><td><code>material</code></td></tr>
+      <tr><td>Lights</td><td>Architectural Light</td><td><code>color</code></td><td><code>temperature</code></td></tr>
+      <tr><td>Lights</td><td>Decorative Light</td><td><code>size</code></td><td><code>material</code></td></tr>
+      <tr><td>All others</td><td>—</td><td colspan="2">First 2 non-empty from: <code>material</code>, <code>color</code>, <code>finish</code>, <code>size</code>, <code>thickness</code>, <code>wattage</code>, <code>pattern</code>, <code>shape</code>, <code>temperature</code></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="image-guidelines">
+  <h2>Image Guidelines</h2>
+  <p>All images must be uploaded to DigitalOcean Spaces before being referenced in the API.</p>
+  <table>
+    <thead><tr><th>Image type</th><th>Recommended size</th><th>Format</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Brand logo</td><td>Any (vector preferred)</td><td>SVG or PNG (transparent bg)</td><td>Used in headers and brand listings</td></tr>
+      <tr><td>Brand hero banner</td><td>Min 1400 × 600px</td><td>JPG or WebP</td><td>Landscape. Full-width banner on brand page.</td></tr>
+      <tr><td>Collection cover</td><td>600 × 600px or 600 × 800px</td><td>JPG or WebP</td><td>Square or portrait. Used as collection tile.</td></tr>
+      <tr><td>Product image</td><td>Min 800 × 800px</td><td>JPG, PNG, or WebP</td><td>Square recommended. White or neutral background for first image.</td></tr>
+    </tbody>
+  </table>
+  <h4>CDN URL format</h4>
+  <pre>https://materialogue.blr1.cdn.digitaloceanspaces.com/[folder-path]/[filename]</pre>
+  <div class="info-box"><p>Contact the Materialogue team to get upload access to DigitalOcean Spaces for your brand folder.</p></div>
+</section>
+
+</div><!-- end tab-general -->
+
+
+<!-- ======================================================= -->
+<!-- TAB: SIMPOLO EXAMPLE                                     -->
+<!-- ======================================================= -->
+<div id="tab-simpolo" style="display:none">
+
+<section id="simp-intro">
+  <div class="simpolo-header">
+    <div class="brand-badge">SIMPOLO</div>
+    <div>
+      <h2>Real Product Example</h2>
+      <p>Step-by-step: how Simpolo would add a tile product to Materialogue using the Brand Partner API</p>
+    </div>
+  </div>
+  <p>This example is based on a real product from <a href="https://www.simpolo.com/tiles/livingroom-tiles" target="_blank">simpolo.com</a>. Every field below maps directly to what the General Guide describes — this shows exactly how to translate a real product listing into a Materialogue API payload.</p>
+  <div class="info-box"><p><strong>Note on images:</strong> Simpolo hosts their images on their own S3 bucket. Before submitting to Materialogue, those images would need to be re-uploaded to Materialogue's DigitalOcean Spaces. The image URLs in this example show the Materialogue CDN format that would be used after re-hosting.</p></div>
+</section>
+
+<section id="simp-product">
+  <h2>The Product</h2>
+  <p>We're using <strong>ALCHIMIA GRAPHITE</strong> — a large-format vitrified floor and wall tile from Simpolo's Alchimia collection.</p>
+  <div class="product-overview">
+    <div class="product-overview-card">
+      <h4>Product Name</h4>
+      <p>Alchimia Graphite</p>
+    </div>
+    <div class="product-overview-card">
+      <h4>Collection</h4>
+      <p>Alchimia</p>
+    </div>
+    <div class="product-overview-card">
+      <h4>Product Code</h4>
+      <p>INFB0RX0326</p>
+    </div>
+    <div class="product-overview-card">
+      <h4>Colour</h4>
+      <p>Grey</p>
+    </div>
+    <div class="product-overview-card">
+      <h4>Finish options</h4>
+      <p>Matt · Polished</p>
+    </div>
+    <div class="product-overview-card">
+      <h4>Thickness</h4>
+      <p>9 mm (all sizes)</p>
+    </div>
+    <div class="product-overview-card">
+      <h4>Available sizes</h4>
+      <p>1198×1198 mm · 1198×1798 mm · 1198×2398 mm · 598×1198 mm</p>
+    </div>
+    <div class="product-overview-card">
+      <h4>Application</h4>
+      <p>Wall Tiles · Floor Tiles · Living Room · Bedroom · Bathroom · Kitchen</p>
+    </div>
+  </div>
+  <p>The product has <strong>4 sizes × 2 finishes = 8 variants total</strong>. Each variant is submitted as a separate product entry. This example focuses on the <strong>1198×1198 mm Matt</strong> variant first, then shows how the second variant differs.</p>
+</section>
+
+<section id="simp-category">
+  <h2>Choosing the Category Path</h2>
+  <p>Simpolo's tile products map to the Walls &amp; Floor category. Here's how to pick the right path:</p>
+  <div class="path-display">
+    <span class="path-part">Walls &amp; Floor</span>
+    <span class="path-arrow">&#8594;</span>
+    <span class="path-part sub">Tile</span>
+    <span class="path-arrow">&#8594;</span>
+    <span class="path-part subsub">Vitrified Tile</span>
+  </div>
+  <table>
+    <thead><tr><th>Field</th><th>Value</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td><code>category</code></td><td><code>"Walls &amp; Floor"</code></td><td>Simpolo makes floor and wall tiles — this is the correct top-level category.</td></tr>
+      <tr><td><code>primary_sub_category</code></td><td><code>"Tile"</code></td><td>The Alchimia collection is a tile product, not stone or wood flooring.</td></tr>
+      <tr><td><code>secondary_sub_category</code></td><td><code>"Vitrified Tile"</code></td><td>Simpolo describes this as a vitrified large-format tile. Porcelain Tile would also be acceptable.</td></tr>
+    </tbody>
+  </table>
+  <div class="highlight-box"><strong>Exact strings only.</strong> <p>Copy the values above exactly — including capitalisation and the ampersand in <code>Walls &amp; Floor</code>. Any variation will be rejected.</p></div>
+</section>
+
+<section id="simp-payload">
+  <h2>Full API Payload</h2>
+  <p>This is the complete JSON body to send to <code>POST /brand-api/products</code> for the ALCHIMIA GRAPHITE in <strong>1198×1198 mm, Matt finish</strong>.</p>
+  <div class="success-box"><p><strong>brand is automatic.</strong> You do not include a <code>brand</code> or <code>brandId</code> field — the API reads your brand from your API key and assigns it automatically.</p></div>
+  <pre>{
+  <span class="comment">// ── Required fields ─────────────────────────────────────</span>
+  <span class="key">"category"</span>:                 <span class="str">"Walls &amp; Floor"</span>,
+  <span class="key">"primary_sub_category"</span>:     <span class="str">"Tile"</span>,
+  <span class="key">"secondary_sub_category"</span>:   <span class="str">"Vitrified Tile"</span>,
+  <span class="key">"product_name"</span>:             <span class="str">"Alchimia Graphite"</span>,
+
+  <span class="comment">// ── Identification ───────────────────────────────────────</span>
+  <span class="key">"product_code"</span>:             <span class="str">"INFB0RX0326"</span>,
+  <span class="key">"sku_variation"</span>:            <span class="str">"1198x1198-Matt"</span>,
+  <span class="key">"collection"</span>:               <span class="str">"Alchimia"</span>,
+  <span class="key">"tags"</span>:                     [<span class="str">"vitrified"</span>, <span class="str">"large-format"</span>, <span class="str">"concrete-look"</span>, <span class="str">"grey"</span>, <span class="str">"living-room"</span>],
+
+  <span class="comment">// ── Descriptions ─────────────────────────────────────────</span>
+  <span class="key">"tagline_description"</span>:      <span class="str">"Large-format vitrified tile with concrete-inspired aesthetic"</span>,
+  <span class="key">"description"</span>:              <span class="str">"Add a touch of elegance and luxury to your interiors with the Alchimia Graphite tile. Part of the Alchimia collection, this large-format vitrified tile features an R9 anti-slip surface and Posh+ finish, combining raw beauty with the strength of high-performance ceramics. Suitable for living rooms, bedrooms, bathrooms, kitchens, balconies, and commercial spaces."</span>,
+
+  <span class="comment">// ── Pricing ──────────────────────────────────────────────</span>
+  <span class="key">"price1"</span>:                   <span class="num">850</span>,
+  <span class="key">"unit1"</span>:                    <span class="str">"/sqft"</span>,
+
+  <span class="comment">// ── Specification fields ─────────────────────────────────</span>
+  <span class="key">"size"</span>:                     <span class="str">"1198 x 1198 mm"</span>,
+  <span class="key">"thickness"</span>:               <span class="str">"9 mm"</span>,
+  <span class="key">"finish"</span>:                   <span class="str">"Matt"</span>,
+  <span class="key">"color"</span>:                    <span class="str">"Grey"</span>,
+  <span class="key">"color_for_filter"</span>:         <span class="str">"Grey"</span>,
+  <span class="key">"special_features"</span>:         <span class="str">"R9 Anti-Slip Surface, Posh+ Surface, Liquid Repellent, Scratch Resistant, Heat &amp; Fire Resistant, Impact Resistant, Chemical &amp; Stain Resistant, Frost Resistant, Antibacterial, Anti-Algae"</span>,
+
+  <span class="comment">// ── Technical documents ───────────────────────────────────</span>
+  <span class="key">"specs_sheet"</span>:             <span class="str">"https://simpolo-web.s3.ap-south-1.amazonaws.com/uploads/media/guides/Simpolo-Technical.pdf"</span>,
+  <span class="key">"installation_guide"</span>:      <span class="str">"https://simpolo-web.s3.ap-south-1.amazonaws.com/uploads/media/guides/Simpolo-Installation.pdf"</span>,
+
+  <span class="comment">// ── Images (hosted on Materialogue DO Spaces) ────────────</span>
+  <span class="key">"images"</span>: [
+    <span class="str">"https://materialogue.blr1.cdn.digitaloceanspaces.com/Images/Simpolo/alchimia-graphite-preview.jpg"</span>,
+    <span class="str">"https://materialogue.blr1.cdn.digitaloceanspaces.com/Images/Simpolo/alchimia-graphite-r1.jpg"</span>,
+    <span class="str">"https://materialogue.blr1.cdn.digitaloceanspaces.com/Images/Simpolo/alchimia-graphite-r2.jpg"</span>
+  ]
+}</pre>
+</section>
+
+<section id="simp-annotations">
+  <h2>Field Annotations</h2>
+  <p>Why each field was chosen and how it maps to the product listing on Simpolo's website.</p>
+  <table>
+    <thead><tr><th>Field</th><th>Value used</th><th>Source / Reason</th></tr></thead>
+    <tbody>
+      <tr><td><code>category</code></td><td><code>"Walls &amp; Floor"</code></td><td>Simpolo lists it under Wall Tiles and Floor Tiles — this is the parent category in Materialogue.</td></tr>
+      <tr><td><code>primary_sub_category</code></td><td><code>"Tile"</code></td><td>Direct product type — a tile, not marble, stone, or wood flooring.</td></tr>
+      <tr><td><code>secondary_sub_category</code></td><td><code>"Vitrified Tile"</code></td><td>Simpolo manufactures vitrified and GVT tiles. Vitrified Tile covers large-format floor/wall tiles like Alchimia.</td></tr>
+      <tr><td><code>product_name</code></td><td><code>"Alchimia Graphite"</code></td><td>Taken directly from Simpolo's product listing. Does not include the size or finish — those go in <code>sku_variation</code>.</td></tr>
+      <tr><td><code>product_code</code></td><td><code>"INFB0RX0326"</code></td><td>Simpolo's internal product code shown in their product URLs and image paths.</td></tr>
+      <tr><td><code>sku_variation</code></td><td><code>"1198x1198-Matt"</code></td><td>Since the same product comes in 4 sizes and 2 finishes, <code>sku_variation</code> distinguishes each variant. Format: <code>size-finish</code>.</td></tr>
+      <tr><td><code>collection</code></td><td><code>"Alchimia"</code></td><td>Simpolo groups this under the "Alchimia" collection — should match the collection name on the brand page.</td></tr>
+      <tr><td><code>size</code></td><td><code>"1198 x 1198 mm"</code></td><td>Taken from Simpolo's packing details. Include the unit (mm) as part of the string. This is <strong>Spec 1</strong> on exports for Tile products.</td></tr>
+      <tr><td><code>thickness</code></td><td><code>"9 mm"</code></td><td>All Alchimia tiles are 9 mm thick according to the packing table on Simpolo's site.</td></tr>
+      <tr><td><code>finish</code></td><td><code>"Matt"</code></td><td>This variant is the Matt finish. This is <strong>Spec 2</strong> on exports for Tile products.</td></tr>
+      <tr><td><code>color</code></td><td><code>"Grey"</code></td><td>Simpolo explicitly lists "Grey" as the colour on the product page.</td></tr>
+      <tr><td><code>color_for_filter</code></td><td><code>"Grey"</code></td><td>Used for colour filtering in the app — should match <code>color</code> unless a more generic grouping is needed.</td></tr>
+      <tr><td><code>special_features</code></td><td>Feature list</td><td>Simpolo lists feature icons on the product page (Liquid Repellent, Scratch Resistant, etc.). Consolidated into one comma-separated string.</td></tr>
+      <tr><td><code>specs_sheet</code></td><td>PDF URL</td><td>Simpolo provides a public technical PDF — linked directly here.</td></tr>
+      <tr><td><code>installation_guide</code></td><td>PDF URL</td><td>Simpolo's installation guide PDF — linked directly here.</td></tr>
+      <tr><td><code>images</code></td><td>Array of 3 URLs</td><td>Simpolo has 3 images per product. Re-upload to Materialogue's DO Spaces before submitting (see Image Guidelines).</td></tr>
+      <tr><td><code>price1</code> / <code>unit1</code></td><td><code>850</code> / <code>"/sqft"</code></td><td>Tiles are priced per square foot. Simpolo's exact pricing would be confirmed by their team.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="simp-variants">
+  <h2>Handling Variants</h2>
+  <p>The Alchimia Graphite tile comes in <strong>4 sizes × 2 finishes = 8 individual SKUs</strong>. Each one is a separate product entry in Materialogue. Here's how to structure all 8:</p>
+
+  <h3>Size variants (Matt finish)</h3>
+  <div class="variant-grid">
+    <div class="variant-card primary">
+      <h4>Variant 1 (shown above)</h4>
+      <div class="vc-val">1198 × 1198 mm</div>
+      <div class="vc-note"><code>sku_variation</code>: "1198x1198-Matt"</div>
+      <div class="vc-note"><code>size</code>: "1198 x 1198 mm"</div>
+    </div>
+    <div class="variant-card">
+      <h4>Variant 2</h4>
+      <div class="vc-val">1198 × 1798 mm</div>
+      <div class="vc-note"><code>sku_variation</code>: "1198x1798-Matt"</div>
+      <div class="vc-note"><code>size</code>: "1198 x 1798 mm"</div>
+    </div>
+    <div class="variant-card">
+      <h4>Variant 3</h4>
+      <div class="vc-val">1198 × 2398 mm</div>
+      <div class="vc-note"><code>sku_variation</code>: "1198x2398-Matt"</div>
+      <div class="vc-note"><code>size</code>: "1198 x 2398 mm"</div>
+    </div>
+    <div class="variant-card">
+      <h4>Variant 4</h4>
+      <div class="vc-val">598 × 1198 mm</div>
+      <div class="vc-note"><code>sku_variation</code>: "598x1198-Matt"</div>
+      <div class="vc-note"><code>size</code>: "598 x 1198 mm"</div>
+    </div>
+  </div>
+
+  <h3>Finish variants (1198×1198 mm)</h3>
+  <div class="variant-grid">
+    <div class="variant-card primary">
+      <h4>Matt (shown above)</h4>
+      <div class="vc-val">Matt</div>
+      <div class="vc-note"><code>finish</code>: "Matt"</div>
+      <div class="vc-note"><code>sku_variation</code>: "1198x1198-Matt"</div>
+    </div>
+    <div class="variant-card">
+      <h4>Polished</h4>
+      <div class="vc-val">Polished</div>
+      <div class="vc-note"><code>finish</code>: "Polished"</div>
+      <div class="vc-note"><code>sku_variation</code>: "1198x1198-Polished"</div>
+    </div>
+  </div>
+
+  <div class="info-box"><p><strong>Rule of thumb:</strong> Any property that affects price, look, or specification should be a separate product entry. The <code>product_name</code> stays the same across all variants — only <code>sku_variation</code>, <code>size</code>, <code>finish</code>, and <code>price1</code> change.</p></div>
+</section>
+
+<section id="simp-variant2">
+  <h2>Size Variant Example</h2>
+  <p>Here is the payload for the second variant — <strong>1198×1798 mm, Polished finish</strong> — showing only the fields that change from the first example:</p>
+  <pre>{
+  <span class="comment">// ── Same required fields ─────────────────────────────────</span>
+  <span class="key">"category"</span>:                 <span class="str">"Walls &amp; Floor"</span>,
+  <span class="key">"primary_sub_category"</span>:     <span class="str">"Tile"</span>,
+  <span class="key">"secondary_sub_category"</span>:   <span class="str">"Vitrified Tile"</span>,
+  <span class="key">"product_name"</span>:             <span class="str">"Alchimia Graphite"</span>,
+
+  <span class="comment">// ── Same product code, different SKU variation ───────────</span>
+  <span class="key">"product_code"</span>:             <span class="str">"INFB0RX0326"</span>,
+  <span class="key">"sku_variation"</span>:            <span class="str">"1198x1798-Polished"</span>,  <span class="comment">// ← changed</span>
+  <span class="key">"collection"</span>:               <span class="str">"Alchimia"</span>,
+
+  <span class="comment">// ── Specs that change ────────────────────────────────────</span>
+  <span class="key">"size"</span>:                     <span class="str">"1198 x 1798 mm"</span>,     <span class="comment">// ← changed</span>
+  <span class="key">"finish"</span>:                   <span class="str">"Polished"</span>,            <span class="comment">// ← changed</span>
+  <span class="key">"thickness"</span>:               <span class="str">"9 mm"</span>,
+  <span class="key">"color"</span>:                    <span class="str">"Grey"</span>,
+
+  <span class="comment">// ── Price may differ for larger size ─────────────────────</span>
+  <span class="key">"price1"</span>:                   <span class="num">920</span>,                   <span class="comment">// ← may differ</span>
+  <span class="key">"unit1"</span>:                    <span class="str">"/sqft"</span>,
+
+  <span class="comment">// ── All other fields remain the same ─────────────────────</span>
+  <span class="key">"description"</span>:             <span class="str">"Add a touch of elegance and luxury..."</span>,
+  <span class="key">"special_features"</span>:        <span class="str">"R9 Anti-Slip Surface, Posh+ Surface..."</span>,
+  <span class="key">"specs_sheet"</span>:             <span class="str">"https://simpolo-web.s3.ap-south-1.amazonaws.com/uploads/media/guides/Simpolo-Technical.pdf"</span>,
+  <span class="key">"installation_guide"</span>:      <span class="str">"https://simpolo-web.s3.ap-south-1.amazonaws.com/uploads/media/guides/Simpolo-Installation.pdf"</span>,
+  <span class="key">"images"</span>: [
+    <span class="str">"https://materialogue.blr1.cdn.digitaloceanspaces.com/Images/Simpolo/alchimia-graphite-preview.jpg"</span>
+  ]
+}</pre>
+</section>
+
+<section id="simp-exports">
+  <h2>What Shows on Exports</h2>
+  <p>When a designer adds an Alchimia Graphite tile to a project and generates a <strong>Selection Sheet</strong> or <strong>Order Sheet</strong>, here's what appears in the spec columns:</p>
+
+  <div class="export-preview">
+    <h4>Spec columns for Walls &amp; Floor &gt; Tile</h4>
+    <div class="export-row">
+      <div class="export-chip"><span>Spec 1 — size: </span>1198 x 1198 mm</div>
+      <div class="export-chip"><span>Spec 2 — finish: </span>Matt</div>
+    </div>
+  </div>
+
+  <p>This is why <code>size</code> and <code>finish</code> are the most important spec fields for any Tile product. If either is left empty, that column will be blank on the export.</p>
+
+  <table>
+    <thead><tr><th>Export</th><th>Column A (Spec 1)</th><th>Column B (Spec 2)</th></tr></thead>
+    <tbody>
+      <tr><td>Selection Sheet</td><td>Size — 1198 x 1198 mm</td><td>Finish — Matt</td></tr>
+      <tr><td>Order Sheet</td><td>Size — 1198 x 1198 mm</td><td>Finish — Matt</td></tr>
+      <tr><td>Excel Export</td><td>Size — 1198 x 1198 mm</td><td>Finish — Matt</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</div><!-- end tab-simpolo -->
+
+</main>
+</div>
+
+<script>
+function switchTab(tab, btn) {
+  document.getElementById('tab-general').style.display = tab === 'general' ? '' : 'none';
+  document.getElementById('tab-simpolo').style.display = tab === 'simpolo' ? '' : 'none';
+  document.getElementById('nav-general').style.display = tab === 'general' ? '' : 'none';
+  document.getElementById('nav-simpolo').style.display = tab === 'simpolo' ? '' : 'none';
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+const links = document.querySelectorAll('.sidebar nav a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector('.sidebar nav a[href="#' + e.target.id + '"]');
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -75% 0px' });
+document.querySelectorAll('section[id]').forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
