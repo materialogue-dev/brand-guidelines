@@ -206,26 +206,26 @@ td code { font-size: 12px; }
   <pre>X-API-Key: your-api-key-here</pre>
   <ol class="step-list">
     <li><div><strong>Get your API key</strong> from the Materialogue team. Each key is scoped to your brand only — you cannot access or modify another brand's data.</div></li>
-    <li><div><strong>Check your brand profile</strong> by calling <code>GET /brand-api/brand</code> to see what's currently on file.</div></li>
-    <li><div><strong>Update your profile</strong> with <code>PUT /brand-api/brand</code> — only send the fields you want to change.</div></li>
-    <li><div><strong>List your products</strong> with <code>GET /brand-api/products</code> and start adding or updating.</div></li>
+    <li><div><strong>Check your brand profile</strong> to see what's currently on file.</div></li>
+    <li><div><strong>Update your profile</strong> — only send the fields you want to change.</div></li>
+    <li><div><strong>List your products</strong> and start adding or updating.</div></li>
   </ol>
 </section>
 
 <section id="brand-structure">
   <h2>Brand Profile Fields</h2>
-  <p>Your brand profile is what appears on the Materialogue brand information page. All fields except <code>name</code> are optional but strongly recommended for a complete listing.</p>
+  <p>Your brand profile is what appears on the Materialogue brand information page. Fields marked <strong>Required</strong> must be provided for a complete listing.</p>
   <table>
     <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description &amp; Format</th><th>Example</th></tr></thead>
     <tbody>
       <tr><td><code>name</code></td><td><span class="badge badge-type">String</span></td><td><span class="badge badge-required">Required</span></td><td>Your brand name. Set by Materialogue — cannot be changed via API.</td><td><code>"Kohler"</code></td></tr>
-      <tr><td><code>logo_url</code></td><td><span class="badge badge-type">String (URL)</span></td><td><span class="badge badge-optional">Optional</span></td><td>Full URL to your brand logo. Host it on DigitalOcean Spaces or another CDN. SVG or PNG preferred, transparent background.</td><td><code>"https://materialogue.blr1.cdn..."</code></td></tr>
+      <tr><td><code>logo_url</code></td><td><span class="badge badge-type">String (URL)</span></td><td><span class="badge badge-required">Required</span></td><td>Full URL to your brand logo. Host it on DigitalOcean Spaces or another CDN. SVG or PNG preferred, transparent background.</td><td><code>"https://materialogue.blr1.cdn..."</code></td></tr>
       <tr><td><code>description</code></td><td><span class="badge badge-type">String</span></td><td><span class="badge badge-optional">Optional</span></td><td>About your brand — history, manufacturing, positioning. Plain text. 100–500 words recommended.</td><td><code>"Kohler Co. is a global leader..."</code></td></tr>
       <tr><td><code>hero_images</code></td><td><span class="badge badge-type">Array of Strings</span></td><td><span class="badge badge-optional">Optional</span></td><td>Array of image URLs shown as banners on the brand page. Landscape orientation, minimum 1400px wide.</td><td><code>["https://cdn.../hero.jpg"]</code></td></tr>
-      <tr><td><code>headquarters</code></td><td><span class="badge badge-type">Object</span></td><td><span class="badge badge-optional">Optional</span></td><td>Two-line address object with <code>address_line1</code> and <code>address_line2</code> — both strings.</td><td>See below</td></tr>
+      <tr><td><code>headquarters</code></td><td><span class="badge badge-type">Object</span></td><td><span class="badge badge-required">Required</span></td><td>Two-line address object with <code>address_line1</code> and <code>address_line2</code> — both strings.</td><td>See below</td></tr>
       <tr><td><code>collections</code></td><td><span class="badge badge-type">Array of Objects</span></td><td><span class="badge badge-optional">Optional</span></td><td>Each item has <code>name</code> (string) and <code>cover_image</code> (URL). Sending this replaces the entire list.</td><td>See Collections section</td></tr>
       <tr><td><code>channel_partners</code></td><td><span class="badge badge-type">Array of Objects</span></td><td><span class="badge badge-optional">Optional</span></td><td>Each item has <code>state</code> (string) and <code>cities</code> (array of strings). Sending this replaces the entire list.</td><td>See Channel Partners section</td></tr>
-      <tr><td><code>contact</code></td><td><span class="badge badge-type">Object</span></td><td><span class="badge badge-optional">Optional</span></td><td>Fields: <code>brand_name</code>, <code>address</code>, <code>phone</code>, <code>email</code> — all strings.</td><td>See below</td></tr>
+      <tr><td><code>contact</code></td><td><span class="badge badge-type">Object</span></td><td><span class="badge badge-required">Required</span></td><td>Fields: <code>brand_name</code>, <code>address</code>, <code>phone</code>, <code>email</code> — all strings.</td><td>See below</td></tr>
     </tbody>
   </table>
   <h3>Complete brand update example</h3>
@@ -728,7 +728,7 @@ brands/[brand-name]/products/[sku-code].jpg        → Product image</pre>
 
 <section id="simp-payload">
   <h2>Full API Payload</h2>
-  <p>This is the complete JSON body to send to <code>POST /brand-api/products</code> for the ALCHIMIA GRAPHITE in <strong>1198×1198 mm, Matt finish</strong>.</p>
+  <p>This is the complete JSON body for the ALCHIMIA GRAPHITE in <strong>1198×1198 mm, Matt finish</strong>.</p>
   <div class="success-box"><p><strong>brand is automatic.</strong> You do not include a <code>brand</code> or <code>brandId</code> field — the API reads your brand from your API key and assigns it automatically.</p></div>
   <pre>{
   <span class="comment">// ── Required fields ─────────────────────────────────────</span>
@@ -971,7 +971,7 @@ https://materialogue.blr1.cdn.digitaloceanspaces.com/brands/kohler/products/puri
   <table>
     <thead><tr><th>Channel</th><th>Details</th></tr></thead>
     <tbody>
-      <tr><td>Email</td><td><a href="mailto:development@materialogue.com" style="color:var(--accent)">development@materialogue.com</a></td></tr>
+      <tr><td>Email</td><td><a href="mailto:hello@materialogue.in" style="color:var(--accent)">hello@materialogue.in</a></td></tr>
       <tr><td>WhatsApp</td><td>Share via your dedicated brand partner contact</td></tr>
     </tbody>
   </table>
