@@ -167,7 +167,8 @@ td code { font-size: 12px; }
   <nav id="nav-upload" style="display:none">
     <div class="nav-group">Image Upload</div>
     <a href="#upload-overview">Overview</a>
-    <a href="#upload-process">How It Works</a>
+    <a href="#upload-process">Option 1: Materialogue-Hosted</a>
+    <a href="#upload-selfhost">Option 2: Self-Hosted</a>
     <a href="#upload-specs">Image Specs</a>
     <a href="#upload-contact">Submit Your Images</a>
   </nav>
@@ -921,15 +922,17 @@ brands/[brand-name]/products/[sku-code].jpg        → Product image</pre>
 <section id="upload-overview">
   <h1>Image Upload</h1>
   <div class="intro-card">
-    <p>You don't need your own hosting to add images to your brand profile or products. Simply share your image files with the Materialogue team and you'll receive a CDN-ready URL to use directly in the API.</p>
-    <p style="margin-top:10px;">All images hosted on Materialogue's DigitalOcean Spaces are served via a global CDN for fast load times across India and beyond.</p>
+    <p>Images referenced in the API must be publicly accessible URLs. You have two options for hosting your images:</p>
+    <p style="margin-top:10px;"><strong>Option 1 — Materialogue-Hosted:</strong> Share your image files with us and we'll host them on our CDN. You get back ready-to-use URLs.</p>
+    <p style="margin-top:6px;"><strong>Option 2 — Self-Hosted:</strong> Host images on your own public server or CDN and use those URLs directly in your API calls.</p>
   </div>
 </section>
 
 <section id="upload-process">
-  <h2>How It Works</h2>
+  <h2>Option 1: Materialogue-Hosted</h2>
+  <p style="color:#b0b4bc;font-size:14px;margin-bottom:12px;">Don't have your own hosting? No problem. Send us your files and we'll host them on our global CDN.</p>
   <ol style="padding-left:20px;line-height:2.2;color:#b0b4bc;font-size:14px;">
-    <li>Prepare your image files following the specs below.</li>
+    <li>Prepare your image files following the <a href="#upload-specs" style="color:var(--accent)">Image Specs</a> below.</li>
     <li>Send the files to the Materialogue team via email or WhatsApp (see <a href="#upload-contact" style="color:var(--accent)">Submit Your Images</a>).</li>
     <li>Include a label for each file so we know where it belongs — e.g. <em>"Kohler logo"</em>, <em>"Alchimia Graphite 600×600 main view"</em>.</li>
     <li>We upload the files to your brand folder on DigitalOcean Spaces and send you back the CDN URLs.</li>
@@ -946,6 +949,35 @@ brands/[brand-name]/products/[sku-code].jpg        → Product image</pre>
     <pre style="margin:8px 0 0;">https://materialogue.blr1.cdn.digitaloceanspaces.com/brands/kohler/logo.svg
 https://materialogue.blr1.cdn.digitaloceanspaces.com/brands/kohler/products/purist-basin-front.jpg
 https://materialogue.blr1.cdn.digitaloceanspaces.com/brands/kohler/products/purist-basin-angle.jpg</pre>
+  </div>
+</section>
+
+<section id="upload-selfhost">
+  <h2>Option 2: Self-Hosted</h2>
+  <p style="color:#b0b4bc;font-size:14px;margin-bottom:12px;">If you already have a CDN, cloud storage, or public web server, you can host images yourself and pass the URLs directly in your API calls.</p>
+  <ol style="padding-left:20px;line-height:2.2;color:#b0b4bc;font-size:14px;">
+    <li>Upload your images to your own public server, CDN, or cloud storage (e.g. AWS S3, Google Cloud Storage, Azure Blob, Cloudflare R2, or your own website).</li>
+    <li>Make sure the image URLs are publicly accessible — no authentication or login required to view them.</li>
+    <li>Use HTTPS URLs for security.</li>
+    <li>Use the public URLs directly in your API calls — in the <code>logo_url</code>, <code>hero_images</code>, <code>collections[].cover_image</code>, or <code>images</code> fields.</li>
+  </ol>
+  <div class="highlight-box" style="margin-top:16px;">
+    <strong>Example — self-hosted URLs:</strong>
+    <pre style="margin:8px 0 0;">"logo_url": "https://cdn.yourbrand.com/assets/logo.svg"
+"hero_images": ["https://cdn.yourbrand.com/banners/hero-2025.jpg"]
+"images": [
+  "https://cdn.yourbrand.com/products/basin-front.jpg",
+  "https://cdn.yourbrand.com/products/basin-angle.jpg"
+]</pre>
+  </div>
+  <div class="info-box" style="margin-top:16px;">
+    <p><strong>Requirements for self-hosted images:</strong></p>
+    <ul style="margin-top:8px;padding-left:18px;line-height:2;color:#b0b4bc;font-size:14px;">
+      <li>URLs must be publicly accessible (no authentication required)</li>
+      <li>Use HTTPS links only</li>
+      <li>URLs should be permanent and stable — avoid temporary or expiring links</li>
+      <li>Follow the same <a href="#upload-specs" style="color:var(--accent)">Image Specs</a> for sizes and formats</li>
+    </ul>
   </div>
 </section>
 
