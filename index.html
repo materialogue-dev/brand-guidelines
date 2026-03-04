@@ -304,13 +304,52 @@ td code { font-size: 12px; }
   <table>
     <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>product_code</code></td><td><span class="badge badge-type">String</span></td><td>Your internal SKU or model number, e.g. <code>"INFB0RX0326"</code>. Indexed for fast lookup.</td></tr>
-      <tr><td><code>primary_sku</code></td><td><span class="badge badge-type">String</span></td><td>Primary SKU if different from product_code.</td></tr>
-      <tr><td><code>sku_variation</code></td><td><span class="badge badge-type">String</span></td><td>Variation identifier for colour/size variants of the same base product. e.g. <code>"1198x1198-Matt"</code></td></tr>
+      <tr><td><code>product_code</code></td><td><span class="badge badge-type">String</span></td><td>Your internal SKU or model number, e.g. <code>"INFB0RX0326"</code>. Ideally unique per variant, but if your system uses the same code across variants, that's okay — use <code>sku_variation</code> to distinguish them. Indexed for fast lookup.</td></tr>
+      <tr><td><code>primary_sku</code></td><td><span class="badge badge-type">String</span></td><td>The shared SKU that links all variants of the same product together. All colour/size variants must use the <strong>same</strong> <code>primary_sku</code> value. e.g. <code>"UNL-DRL08W"</code></td></tr>
+      <tr><td><code>sku_variation</code></td><td><span class="badge badge-type">String</span></td><td>Describes what makes this variant unique — typically colour or size. e.g. <code>"Black"</code>, <code>"1198x1198-Matt"</code></td></tr>
+      <tr><td><code>total_variants</code></td><td><span class="badge badge-type">Number</span></td><td>Total number of variants for this product group. e.g. <code>3</code> if the product comes in 3 colours.</td></tr>
       <tr><td><code>collection</code></td><td><span class="badge badge-type">String</span></td><td>The collection/range this product belongs to, e.g. <code>"Alchimia"</code>.</td></tr>
       <tr><td><code>tags</code></td><td><span class="badge badge-type">Array of Strings</span></td><td>Free-form search tags, e.g. <code>["vitrified", "large-format", "concrete-look"]</code>.</td></tr>
     </tbody>
   </table>
+
+  <h3>How product variants are linked</h3>
+  <p>When a product comes in multiple colours, sizes, or finishes, each variant is submitted as a <strong>separate product entry</strong>. Variants are linked together using the <code>primary_sku</code> field — all variants of the same product must share the same <code>primary_sku</code> value.</p>
+  <p>On the Materialogue front end, products with matching <code>primary_sku</code> values are grouped together. Visitors see selectable options (e.g. colour swatches) to switch between variants on the product page.</p>
+
+  <div class="highlight-box" style="margin-top:16px;">
+    <strong>Example — A downlight available in 3 colours:</strong>
+    <p style="margin-top:8px;">All 3 variants share <code>primary_sku</code>: <code>"UNL-DRL08W"</code>. Each has its own <code>product_code</code>, <code>color</code>, and <code>sku_variation</code>.</p>
+  </div>
+
+  <div class="variant-grid" style="margin-top:12px;">
+    <div class="variant-card primary">
+      <h4>Variant 1</h4>
+      <div class="vc-val">Black</div>
+      <div class="vc-note"><code>primary_sku</code>: "UNL-DRL08W"</div>
+      <div class="vc-note"><code>product_code</code>: "UNL-DRL08W-BLK"</div>
+      <div class="vc-note"><code>sku_variation</code>: "Black"</div>
+      <div class="vc-note"><code>color</code>: "Black"</div>
+    </div>
+    <div class="variant-card">
+      <h4>Variant 2</h4>
+      <div class="vc-val">White</div>
+      <div class="vc-note"><code>primary_sku</code>: "UNL-DRL08W"</div>
+      <div class="vc-note"><code>product_code</code>: "UNL-DRL08W-WHT"</div>
+      <div class="vc-note"><code>sku_variation</code>: "White"</div>
+      <div class="vc-note"><code>color</code>: "White"</div>
+    </div>
+    <div class="variant-card">
+      <h4>Variant 3</h4>
+      <div class="vc-val">Rose Gold</div>
+      <div class="vc-note"><code>primary_sku</code>: "UNL-DRL08W"</div>
+      <div class="vc-note"><code>product_code</code>: "UNL-DRL08W-RG"</div>
+      <div class="vc-note"><code>sku_variation</code>: "Rose Gold"</div>
+      <div class="vc-note"><code>color</code>: "Rose Gold"</div>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top:16px;"><p><strong>Key rule:</strong> The <code>primary_sku</code> must be identical across all variants. Each variant gets its own unique <code>sku_variation</code>. If your system assigns unique codes per variant, use them as <code>product_code</code>; otherwise, the same <code>product_code</code> is fine — <code>sku_variation</code> will distinguish them. The <code>product_name</code> stays the same across all variants.</p></div>
 </section>
 
 <section id="product-descriptions">
@@ -740,7 +779,9 @@ brands/[brand-name]/products/[sku-code].jpg        → Product image</pre>
 
   <span class="comment">// ── Identification ───────────────────────────────────────</span>
   <span class="key">"product_code"</span>:             <span class="str">"INFB0RX0326"</span>,
+  <span class="key">"primary_sku"</span>:              <span class="str">"INFB0RX0326"</span>,
   <span class="key">"sku_variation"</span>:            <span class="str">"1198x1198-Matt"</span>,
+  <span class="key">"total_variants"</span>:           <span class="num">8</span>,
   <span class="key">"collection"</span>:               <span class="str">"Alchimia"</span>,
   <span class="key">"tags"</span>:                     [<span class="str">"vitrified"</span>, <span class="str">"large-format"</span>, <span class="str">"concrete-look"</span>, <span class="str">"grey"</span>, <span class="str">"living-room"</span>],
 
@@ -784,6 +825,8 @@ brands/[brand-name]/products/[sku-code].jpg        → Product image</pre>
       <tr><td><code>secondary_sub_category</code></td><td><code>"Vitrified Tile"</code></td><td>Simpolo manufactures vitrified and GVT tiles. Vitrified Tile covers large-format floor/wall tiles like Alchimia.</td></tr>
       <tr><td><code>product_name</code></td><td><code>"Alchimia Graphite"</code></td><td>Taken directly from Simpolo's product listing. Does not include the size or finish — those go in <code>sku_variation</code>.</td></tr>
       <tr><td><code>product_code</code></td><td><code>"INFB0RX0326"</code></td><td>Simpolo's internal product code shown in their product URLs and image paths.</td></tr>
+      <tr><td><code>primary_sku</code></td><td><code>"INFB0RX0326"</code></td><td>All 8 variants of Alchimia Graphite share this same <code>primary_sku</code>. This is how Materialogue links them together on the product page.</td></tr>
+      <tr><td><code>total_variants</code></td><td><code>8</code></td><td>4 sizes × 2 finishes = 8 variants total for this product.</td></tr>
       <tr><td><code>sku_variation</code></td><td><code>"1198x1198-Matt"</code></td><td>Since the same product comes in 4 sizes and 2 finishes, <code>sku_variation</code> distinguishes each variant. Format: <code>size-finish</code>.</td></tr>
       <tr><td><code>collection</code></td><td><code>"Alchimia"</code></td><td>Simpolo groups this under the "Alchimia" collection — should match the collection name on the brand page.</td></tr>
       <tr><td><code>size</code></td><td><code>"1198 x 1198 mm"</code></td><td>Taken from Simpolo's packing details. Include the unit (mm) as part of the string. This is <strong>Spec 1</strong> on exports for Tile products.</td></tr>
@@ -802,7 +845,7 @@ brands/[brand-name]/products/[sku-code].jpg        → Product image</pre>
 
 <section id="simp-variants">
   <h2>Handling Variants</h2>
-  <p>The Alchimia Graphite tile comes in <strong>4 sizes × 2 finishes = 8 individual SKUs</strong>. Each one is a separate product entry in Materialogue. Here's how to structure all 8:</p>
+  <p>The Alchimia Graphite tile comes in <strong>4 sizes × 2 finishes = 8 individual SKUs</strong>. Each one is a separate product entry in Materialogue. All 8 variants share the same <code>primary_sku</code> value (<code>"INFB0RX0326"</code>) so they are linked together on the product page. Here's how to structure all 8:</p>
 
   <h3>Size variants (Matt finish)</h3>
   <div class="variant-grid">
@@ -848,7 +891,7 @@ brands/[brand-name]/products/[sku-code].jpg        → Product image</pre>
     </div>
   </div>
 
-  <div class="info-box"><p><strong>Rule of thumb:</strong> Any property that affects price, look, or specification should be a separate product entry. The <code>product_name</code> stays the same across all variants — only <code>sku_variation</code>, <code>size</code>, <code>finish</code>, and <code>price1</code> change.</p></div>
+  <div class="info-box"><p><strong>Rule of thumb:</strong> Any property that affects price, look, or specification should be a separate product entry. The <code>product_name</code> and <code>primary_sku</code> stay the same across all variants — only <code>sku_variation</code>, <code>size</code>, <code>finish</code>, and <code>price1</code> change.</p></div>
 </section>
 
 <section id="simp-variant2">
@@ -861,9 +904,11 @@ brands/[brand-name]/products/[sku-code].jpg        → Product image</pre>
   <span class="key">"secondary_sub_category"</span>:   <span class="str">"Vitrified Tile"</span>,
   <span class="key">"product_name"</span>:             <span class="str">"Alchimia Graphite"</span>,
 
-  <span class="comment">// ── Same product code, different SKU variation ───────────</span>
+  <span class="comment">// ── Same primary_sku links this variant to the first ─────</span>
   <span class="key">"product_code"</span>:             <span class="str">"INFB0RX0326"</span>,
+  <span class="key">"primary_sku"</span>:              <span class="str">"INFB0RX0326"</span>,          <span class="comment">// ← same as variant 1</span>
   <span class="key">"sku_variation"</span>:            <span class="str">"1198x1798-Polished"</span>,  <span class="comment">// ← changed</span>
+  <span class="key">"total_variants"</span>:           <span class="num">8</span>,
   <span class="key">"collection"</span>:               <span class="str">"Alchimia"</span>,
 
   <span class="comment">// ── Specs that change ────────────────────────────────────</span>
